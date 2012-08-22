@@ -1,0 +1,14 @@
+function(doc) {
+	for(var i in doc) {
+		if (typeof(doc[i]) == "object") {
+			for(var devicename in doc[i]) {
+				var theTime = new Date(doc[i][devicename]['time']);
+				var year = theTime.getFullYear();
+				var month = theTime.getMonth();
+				var daym = theTime.getDate();
+				var hours = theTime.getHours();
+				var minutes = theTime.getMinutes();
+				var seconds = theTime.getSeconds();
+				var milliseconds = theTime.getMilliseconds();
+				emit([i,devicename,year,month,daym,hours,minutes,seconds,milliseconds], doc[i][devicename]['data']);
+}}}}

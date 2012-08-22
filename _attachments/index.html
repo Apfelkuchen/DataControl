@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>DataControl</title>
+    <link rel="stylesheet" href="style/main.css" type="text/css">
+  </head>
+  <body>
+	<div id="header">
+		<div id="account"></div>
+	    <div id="profile"></div>
+	  	<h1>DataControl</h1>
+		</div>
+
+    <div id="profile"></div>
+	<div id="machineList"></div>
+    <div id="DataMonitor"></div>
+    <div id="container" style="width:600px; height:300px;"></div>
+   
+
+  </body>
+  <script src="vendor/couchapp/loader.js"></script>
+  <script src="js/CollapsibleLists.js"></script>
+  <script src="js/dygraph-combined.js"></script>
+  <script src="js/highcharts.js"></script>
+  <script src="mustache.js"></script>
+  <script src="plot.js"></script>
+  <script src="index.js"></script>
+  <script src="js/anytime.js"></script>
+  <script type="text/javascript" charset="utf-8">
+    $.couch.app(function(app) {
+      $("#account").evently("account", app);
+      $("#profile").evently("profile", app);
+      $.evently.connect("#account","#profile", ["loggedIn","loggedOut"]);
+      $("#items").evently("items", app);
+    });
+  </script>
+</html>

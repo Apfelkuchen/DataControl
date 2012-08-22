@@ -1,0 +1,46 @@
+<form id="newparameters" action="new.html" method="post">
+<ul>
+      <li>
+        <a href="#">Parameters: </a>
+		<ul>
+		   	{{#parameters}}
+			<li> {{ parameter }} : <input type="text" size="10" name="{{devicetype}}_{{devicename}}_{{parameter}}" value="{{value}}">
+			</li>
+			{{/parameters}}
+		</ul>
+			
+      </li>
+</ul>
+<input type="submit" value="submit">
+<input type="button" value="Plot Data" onClick="plotButton('{{devicetype}}','{{devicename}}','{{dbName}}','{{sourcetype}}',0,{})">
+<input type="button" value="Automatic Update Chart" onClick="updateGraph('{{devicetype}}','{{devicename}}','{{dbName}}','{{sourcetype}}')">
+<div id="updateindicator"></div>
+<div id="saved"></div>
+
+</form>
+
+  <script type="text/javascript" charset="utf-8">
+	$("form#newparameters").submit(function() {
+		var postDoc = {{{doc}}};
+	  	{{#parameters}}
+	  	// following part is for the type of value, is it a string (function: sin), or an int (value of data)
+		if(isNaN(parseFloat($("input[name={{devicetype}}_{{devicename}}_{{parameter}}]").val()))) {
+			postDoc['{{devicetype}}']['{{devicename}}']['{{parameter}}'] = $("input[name={{devicetype}}_{{devicename}}_{{parameter}}]").val();
+		}
+		else {
+			postDoc['{{devicetype}}']['{{devicename}}']['{{parameter}}'] = parseFloat($("input[name={{devicetype}}_{{devicename}}_{{parameter}}]").val());
+		}
+	  	{{/parameters}}
+	  	$.couch.db('{{dbName}}').saveDoc(postDoc, {
+        	success : function(resp) {
+          		$("#saved").text("Saved _rev: "+resp.rev).fadeIn(500).fadeOut(2000);
+          		setTimeout(function() { 
+          			getParameters('{{dbName}}','{{devicetype}}','{{devicename}}','{{ControlDocName}}','{{sourcetype}}');
+          		}, 2500 );
+
+				
+        	}
+      	});
+	  return false;
+	  });	
+  </script>

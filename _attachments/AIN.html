@@ -1,0 +1,45 @@
+<link rel="stylesheet" type="text/css" href="style/anytime.css" />
+<form id="selectrange" action="" method="post" target="_blank">
+<ul>
+      <li>
+      	<h2> {{sourcetype}} - {{dbName}} - {{devicetype}} - {{devicename}}</h2>
+        <a href="#">Range for plot: </a>
+		<ul>
+		   	<li> Start: <input type="text" size="15" id="startpoint" value=""> </li>
+			<li> End: <input type="text" size="15" id="endpoint" value=""></li>
+		</ul>
+	
+      </li>
+</ul>
+<input type="submit" value="submit">
+<input type="button" value="Last 5 Min" id="Last5MinButton">
+UpdateFrequency: <input type="text" id="updatefrequency" size="4" value="{{updatefrequency}}">
+</form>
+  <script type="text/javascript" charset="utf-8">
+  	$(document).ready( function() {	
+		var theDate = new Date();
+		
+	});
+	$("form#selectrange").submit(function() {
+		starttime = (new Date($("input[id=startpoint]").val())).getTime()/1000;
+		endtime = (new Date($("input[id=endpoint]").val())).getTime()/1000;
+		zoomlevel = ['no zoom'];
+		window.plotButton('{{devicetype}}','{{devicename}}','{{dbName}}','{{sourcetype}}',starttime,endtime);
+		return false; 
+	});
+	$("#Last5MinButton").on("click", function() {
+		var postDoc = {{{doc}}};
+		postDoc['updatefrequency'] = $("input[id=updatefrequency]").val();
+		$.couch.db('{{dbName}}').saveDoc(postDoc);
+		Last5MinsviaChangesfeed('{{devicetype}}','{{devicename}}','{{dbName}}','{{sourcetype}}');
+		AnyTime.noPicker("startpoint");
+		AnyTime.noPicker("endpoint");
+		getAIN('{{dbName}}','{{devicetype}}','{{devicename}}'); // refresh this windows to avoid rev conflict
+	});
+	AnyTime.picker( "startpoint", { format: "%Y/%m/%d %H:%i"} );
+	AnyTime.picker( "endpoint", { format: "%Y/%m/%d %H:%i"} );+
+	$("a").on("click", function() {
+		AnyTime.noPicker("startpoint");
+		AnyTime.noPicker("endpoint");
+	});
+  </script>
